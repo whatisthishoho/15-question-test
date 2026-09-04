@@ -497,6 +497,9 @@
       gap: 10px;
       flex-wrap: wrap;
     }
+    .email-row.name-row {
+      margin-bottom: 10px;
+    }
     .email-input {
       flex: 1 1 220px;
       min-height: 52px;
@@ -821,8 +824,11 @@
           </div>
 
           <div class="email-panel">
-            <h3>결과를 이메일로 받아보시겠어요? (선택)</h3>
-            <p class="email-sub">이메일을 남겨주시면 지금 확인한 결과를 그대로 보내드려요. 입력하지 않으셔도 위의 "결과 이미지 저장"으로 결과를 받으실 수 있습니다.</p>
+            <h3>내 이름이 담긴 결과 카드, 이메일로 받아보세요 (선택)</h3>
+            <p class="email-sub">이름과 이메일을 남겨주시면 결과 카드에 이름을 넣어서 그대로 보내드려요. 입력하지 않으셔도 위의 "결과 이미지 저장"으로 결과를 받으실 수 있습니다.</p>
+            <div class="email-row name-row">
+              <input id="name-input" class="email-input" type="text" placeholder="이름을 입력해 주세요" autocomplete="name" maxlength="20" />
+            </div>
             <div class="email-row">
               <input id="email-input" class="email-input" type="email" placeholder="이메일 주소를 입력해 주세요" autocomplete="email" />
               <button id="email-send-btn" disabled>결과 받기</button>
@@ -835,8 +841,8 @@
               </span>
             </label>
             <div id="consent-details" class="consent-details">
-              · 수집 항목: 이메일 주소<br />
-              · 수집 목적: 테스트 결과 이메일 발송<br />
+              · 수집 항목: 이름, 이메일 주소<br />
+              · 수집 목적: 테스트 결과 이메일 발송(결과 카드 개인화 포함)<br />
               · 보유·이용 기간: 결과 발송 완료 후 즉시 파기 (단, 통계 목적으로 별도 동의 시 최대 6개월 보관)<br />
               · 동의를 거부하실 수 있으며, 거부 시 이메일로 결과를 받아보실 수 없습니다(이미지 저장은 계속 이용 가능).<br />
               · 문의: 함께일하는재단
@@ -1259,11 +1265,13 @@
        이메일 결과 전송 (Google Apps Script 웹앱 연동)
        ============================== */
     function resetEmailPanel() {
+      const nameInput = document.getElementById("name-input");
       const emailInput = document.getElementById("email-input");
       const consentCheckbox = document.getElementById("consent-checkbox");
       const details = document.getElementById("consent-details");
       const status = document.getElementById("email-status");
       const sendBtn = document.getElementById("email-send-btn");
+      if (nameInput) nameInput.value = "";
       if (emailInput) emailInput.value = "";
       if (consentCheckbox) consentCheckbox.checked = false;
       if (details) details.classList.remove("open");
@@ -1276,18 +1284,20 @@
     }
 
     function updateEmailButtonState() {
+      const name = document.getElementById("name-input").value.trim();
       const email = document.getElementById("email-input").value.trim();
       const agreed = document.getElementById("consent-checkbox").checked;
-      document.getElementById("email-send-btn").disabled = !(isValidEmail(email) && agreed);
+      document.getElementById("email-send-btn").disabled = !(name.length > 0 && isValidEmail(email) && agreed);
     }
 
     async function sendResultEmail() {
       const status = document.getElementById("email-status");
       const sendBtn = document.getElementById("email-send-btn");
+      const name = document.getElementById("name-input").value.trim();
       const email = document.getElementById("email-input").value.trim();
       const agreed = document.getElementById("consent-checkbox").checked;
 
-      if (!isValidEmail(email) || !agreed || !currentResult) return;
+      if (!name || !isValidEmail(email) || !agreed || !currentResult) return;
 
       if (!CONFIG.emailEndpoint) {
         status.textContent = "결과 전송 기능이 아직 연결되지 않았어요. 관리자에게 문의해 주세요.";
@@ -1305,7 +1315,7 @@
       try {
         let imageBase64 = "";
         try {
-          imageBase64 = await getResultImageBase64(t);
+          imageBase64 = await getResultImageBase64(t, name);
           if (!imageBase64) imageDebugNote = " [디버그: 이미지 데이터 비어있음]";
         } catch (imgErr) {
           imageBase64 = ""; // 이미지 생성 실패해도 이메일 발송은 계속 진행
@@ -1318,6 +1328,7 @@
           method: "POST",
           headers: { "Content-Type": "text/plain;charset=utf-8" },
           body: JSON.stringify({
+            name,
             email,
             resultKey: currentResult,
             resultName: t.name,
@@ -1569,7 +1580,7 @@
       };
     }
 
-    async function buildResultCanvas(t) {
+    async function buildResultCanvas(t, name) {
         const W = 1080, H = 1350, PAD = 76;
         const canvas = document.createElement("canvas");
         canvas.width = W;
@@ -1635,9 +1646,13 @@
         ctx.textAlign = "left";
 
         // 킥커
+        const trimmedName = (name || "").trim();
+        const kickerText = trimmedName
+          ? `${trimmedName.slice(0, 12)}님의 임팩트 유형`
+          : "나의 임팩트 유형";
         ctx.fillStyle = "#26A269";
         ctx.font = `900 26px ${FONT}`;
-        ctx.fillText("나의 임팩트 유형", innerX + 116, y - 30);
+        ctx.fillText(kickerText, innerX + 116, y - 30);
 
         // 제목
         ctx.fillStyle = "#0C2D43";
@@ -1735,8 +1750,8 @@
       }
     }
 
-    async function getResultImageBase64(t) {
-      const canvas = await buildResultCanvas(t);
+    async function getResultImageBase64(t, name) {
+      const canvas = await buildResultCanvas(t, name);
       const dataUrl = canvas.toDataURL("image/png");
       return dataUrl.split(",")[1] || "";
     }
@@ -1750,6 +1765,7 @@
     bindTap(document.getElementById("consent-toggle-btn"), () => {
       document.getElementById("consent-details").classList.toggle("open");
     });
+    document.getElementById("name-input").addEventListener("input", updateEmailButtonState);
     document.getElementById("email-input").addEventListener("input", updateEmailButtonState);
     document.getElementById("consent-checkbox").addEventListener("change", updateEmailButtonState);
     bindTap(document.getElementById("more-btn"), () => openModal("more-modal"));
