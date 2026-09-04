@@ -355,41 +355,62 @@
     .result-card {
       padding: clamp(24px, 4vw, 46px);
       position: relative;
+      --acc: var(--green);
+      --acc-soft: var(--green-light);
+      --acc-dark: var(--navy);
+      border-radius: 28px;
+      border: 2px dashed color-mix(in srgb, var(--acc) 55%, transparent);
+      background: linear-gradient(180deg, color-mix(in srgb, var(--acc-soft) 55%, white), white 320px);
     }
 
     .result-header {
-      display: grid;
-      grid-template-columns: auto 1fr;
+      display: flex;
+      flex-direction: column;
       align-items: center;
-      gap: 20px;
+      text-align: center;
+      gap: 6px;
       padding-bottom: 25px;
-      border-bottom: 1px solid var(--line);
+      border-bottom: 1px dashed color-mix(in srgb, var(--acc) 35%, transparent);
     }
 
     .result-icon {
-      width: 86px;
-      height: 86px;
-      border-radius: 26px;
+      width: clamp(120px, 22vw, 180px);
+      height: clamp(120px, 22vw, 180px);
+      border-radius: 50%;
       display: grid;
       place-items: center;
-      font-size: 44px;
-      background: var(--green-light);
-      box-shadow: inset 0 0 0 1px rgba(38,162,105,.15);
+      font-size: clamp(66px, 12vw, 100px);
+      background: var(--acc-soft);
+      box-shadow: 0 14px 30px -8px color-mix(in srgb, var(--acc) 45%, transparent), inset 0 0 0 5px white;
+      animation: resultIconFloat 2.6s ease-in-out infinite;
+      margin-bottom: 10px;
+    }
+    @keyframes resultIconFloat {
+      0%, 100% { transform: translateY(0) rotate(-2deg); }
+      50% { transform: translateY(-8px) rotate(2deg); }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .result-icon { animation: none; }
     }
 
     .result-kicker {
-      color: var(--green);
+      display: inline-block;
+      color: var(--acc-dark);
+      background: color-mix(in srgb, var(--acc-soft) 70%, white);
       font-weight: 900;
-      font-size: 15px;
-      margin-bottom: 5px;
+      font-size: 14px;
+      padding: 6px 14px;
+      border-radius: 999px;
+      margin-bottom: 9px;
     }
 
     .result-title {
-      color: var(--navy-2);
+      color: var(--acc-dark);
       font-size: clamp(28px, 4vw, 44px);
       line-height: 1.2;
       letter-spacing: -0.045em;
       margin-bottom: 8px;
+      font-weight: 900;
     }
 
     .result-desc {
@@ -407,14 +428,14 @@
       margin-top: 22px;
     }
 
-    .panel {
-      border-radius: 20px;
+    .result-card .panel {
+      border-radius: 24px;
       padding: 22px;
-      border: 1px solid var(--line);
-      background: #FBFDFD;
+      border: 1px solid color-mix(in srgb, var(--acc) 22%, var(--line));
+      background: color-mix(in srgb, var(--acc-soft) 45%, #FBFDFD);
     }
-    .panel h3 {
-      color: var(--navy);
+    .result-card .panel h3 {
+      color: var(--acc-dark);
       font-size: 18px;
       margin-bottom: 14px;
     }
@@ -422,25 +443,30 @@
       list-style: none;
       padding: 0;
       margin: 0;
-      display: grid;
-      gap: 10px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
     }
     .activity-list li {
       display: flex;
-      gap: 10px;
-      align-items: flex-start;
-      color: #38515E;
+      gap: 6px;
+      align-items: center;
+      background: white;
+      color: var(--acc-dark, #1E8A54);
       font-weight: 700;
-      line-height: 1.45;
+      font-size: 13px;
+      line-height: 1.3;
+      padding: 8px 14px;
+      border-radius: 999px;
     }
     .activity-list li::before {
       content: "✓";
-      color: var(--green);
+      color: var(--acc, #26A269);
       font-weight: 1000;
     }
 
     .action-panel {
-      background: linear-gradient(145deg, var(--navy), #17648E);
+      background: linear-gradient(145deg, var(--acc-dark, var(--navy)), var(--acc, #17648E));
       color: white;
       border: 0;
     }
@@ -458,6 +484,16 @@
       grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
       gap: 12px;
       margin-top: 20px;
+    }
+    .result-card .result-actions .secondary-btn {
+      border-radius: 999px;
+    }
+    .result-card .result-actions .secondary-btn.yellow {
+      background: var(--acc, #FFF3D6);
+      color: white;
+    }
+    .result-card .result-actions .secondary-btn.dark {
+      background: var(--acc-dark, var(--navy));
     }
     .secondary-btn.yellow { background: #FFF3D6; color: #8A5A00; }
 
@@ -477,12 +513,12 @@
     .email-panel {
       margin-top: 22px;
       padding: 20px;
-      border-radius: 20px;
-      background: #F6FAFB;
+      border-radius: 24px;
+      background: color-mix(in srgb, var(--acc-soft, #F6FAFB) 40%, #F6FAFB);
       border: 1px solid var(--line);
     }
     .email-panel h3 {
-      color: var(--navy);
+      color: var(--acc-dark, var(--navy));
       font-size: 17px;
       margin-bottom: 4px;
     }
@@ -503,9 +539,9 @@
     .email-input {
       flex: 1 1 220px;
       min-height: 52px;
-      border-radius: 14px;
+      border-radius: 999px;
       border: 2px solid var(--line);
-      padding: 0 16px;
+      padding: 0 20px;
       font-size: 16px;
       color: var(--ink);
       background: white;
@@ -518,8 +554,8 @@
       flex: 0 0 auto;
       min-height: 52px;
       padding: 0 22px;
-      border-radius: 14px;
-      background: var(--green);
+      border-radius: 999px;
+      background: var(--acc-dark, var(--green));
       color: white;
       font-weight: 900;
       font-size: 15px;
@@ -707,8 +743,6 @@
       .topbar { margin-bottom: 8px; }
       .brand-logo { width: clamp(175px, 52vw, 225px); }
       .start-card, .question-card, .result-card, .tie-card { border-radius: 20px; }
-      .result-header { grid-template-columns: 1fr; text-align: center; }
-      .result-icon { margin: auto; }
       .result-grid { grid-template-columns: 1fr; }
       .result-actions { grid-template-columns: 1fr; }
       .answer-btn { min-height: 82px; padding: 18px; }
@@ -914,8 +948,12 @@
       problem: {
         name: "사회문제 탐색가",
         label: "문제발견형",
-        icon: "🔎",
-        desc: "사회문제의 원인과 당사자의 필요를 깊이 이해하고, 새로운 해결방향을 찾는 데 강점이 있습니다.",
+        icon: "🦉",
+        tagline: "질문을 놓지 않는 관찰자",
+        bg: "#EAF1FC",
+        accent: "#6C8CFF",
+        accentDark: "#3D56C9",
+        desc: "사회문제의 원인과 당사자의 필요를 깊이 이해하고,\n새로운 해결방향을 찾는 데 강점이 있습니다.",
         tieText: "사회문제의 원인과 당사자의 필요를 깊이 이해한다.",
         activities: ["사회문제 조사와 분석", "사용자 인터뷰", "정책 및 사업기획", "사회성과 측정", "리서치와 서비스 기획"],
         action: "관심 있는 사회문제의 당사자 이야기를 한 가지 찾아보세요.",
@@ -928,8 +966,12 @@
       idea: {
         name: "임팩트 아이디어 메이커",
         label: "아이디어기획형",
-        icon: "💡",
-        desc: "사회문제를 새로운 제품, 서비스 또는 사업모델로 전환하는 데 관심과 강점이 있습니다.",
+        icon: "🦊",
+        tagline: "번뜩이는 아이디어 부자",
+        bg: "#FFF3E2",
+        accent: "#FF9F40",
+        accentDark: "#C96F13",
+        desc: "사회문제를 새로운 제품, 서비스 또는 사업모델로 전환하는 데\n관심과 강점이 있습니다.",
         tieText: "새로운 제품·서비스와 사업모델을 구상한다.",
         activities: ["소셜벤처 창업", "사업모델 기획", "제품·서비스 개발", "창업 프로그램 참여", "사업개발"],
         action: "해결하고 싶은 문제와 해결방법을 한 문장으로 작성해 보세요.",
@@ -942,8 +984,12 @@
       execute: {
         name: "임팩트 실행가",
         label: "실행성장형",
-        icon: "🚀",
-        desc: "계획을 현장에서 직접 실행하고, 운영과 개선을 통해 결과를 만들어내는 데 강점이 있습니다.",
+        icon: "🐯",
+        tagline: "일단 부딪히는 행동파",
+        bg: "#FFECEA",
+        accent: "#FF6B5C",
+        accentDark: "#C93B2E",
+        desc: "계획을 현장에서 직접 실행하고,\n운영과 개선을 통해 결과를 만들어내는 데 강점이 있습니다.",
         tieText: "계획한 일을 현장에서 실행하고 성과를 만든다.",
         activities: ["사회적기업·소셜벤처 취업", "프로젝트 운영", "서비스 운영", "마케팅과 영업", "고객 및 현장관리"],
         action: "관심 분야의 소셜벤처에서 어떤 직무를 채용하는지 찾아보세요.",
@@ -956,8 +1002,12 @@
       connect: {
         name: "임팩트 커넥터",
         label: "연결확산형",
-        icon: "🤝",
-        desc: "사람과 조직, 정보와 자원을 연결하고 사회문제 해결 활동을 확산하는 데 강점이 있습니다.",
+        icon: "🐬",
+        tagline: "사람과 사람을 잇는 마당발",
+        bg: "#E3F7F1",
+        accent: "#17B897",
+        accentDark: "#0E7A63",
+        desc: "사람과 조직, 정보와 자원을 연결하고\n사회문제 해결 활동을 확산하는 데 강점이 있습니다.",
         tieText: "사람과 조직, 정보와 자원을 연결해 변화를 넓힌다.",
         activities: ["파트너십과 대외협력", "커뮤니티 운영", "홍보와 콘텐츠 제작", "기업 사회공헌과 ESG", "창업지원과 임팩트 투자"],
         action: "관심 있는 사회문제와 관련된 기관이나 커뮤니티 하나를 찾아보세요.",
@@ -1240,7 +1290,16 @@
       currentResult = typeKey;
       const t = TYPES[typeKey];
 
+      const resultCardEl = document.querySelector("#result-screen .result-card");
+      if (resultCardEl) {
+        resultCardEl.style.setProperty("--acc", t.accent || "#26A269");
+        resultCardEl.style.setProperty("--acc-soft", t.bg || "#EAF7F0");
+        resultCardEl.style.setProperty("--acc-dark", t.accentDark || "#143D5B");
+      }
+
       document.getElementById("result-icon").textContent = t.icon;
+      const kickerEl = document.querySelector("#result-screen .result-kicker");
+      if (kickerEl) kickerEl.textContent = `✨ ${t.tagline || "나의 임팩트 유형"}`;
       document.getElementById("result-title").textContent = `당신은 ${t.name}입니다`;
       document.getElementById("result-desc").textContent = t.desc;
       document.getElementById("action-text").textContent = t.action;
@@ -1535,17 +1594,19 @@
        ============================== */
     function wrapCanvasLines(ctx, text, maxWidth) {
       const lines = [];
-      let line = "";
-      for (const ch of String(text)) {
-        const test = line + ch;
-        if (ctx.measureText(test).width > maxWidth && line !== "") {
-          lines.push(line);
-          line = ch;
-        } else {
-          line = test;
+      String(text).split("\n").forEach(paragraph => {
+        let line = "";
+        for (const ch of paragraph) {
+          const test = line + ch;
+          if (ctx.measureText(test).width > maxWidth && line !== "") {
+            lines.push(line);
+            line = ch;
+          } else {
+            line = test;
+          }
         }
-      }
-      if (line) lines.push(line);
+        lines.push(line);
+      });
       return lines;
     }
 
@@ -1581,148 +1642,208 @@
     }
 
     async function buildResultCanvas(t, name) {
-        const W = 1080, H = 1350, PAD = 76;
+        const W = 1080, H = 1350;
         const canvas = document.createElement("canvas");
         canvas.width = W;
         canvas.height = H;
         const ctx = canvas.getContext("2d");
         const FONT = '"Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", sans-serif';
+        const cx0 = W / 2;
+        const bgColor = t.bg || "#F6FAFB";
+        const accent = t.accent || "#26A269";
+        const accentDark = t.accentDark || "#143D5B";
 
-        // 배경
-        const bg = ctx.createLinearGradient(0, 0, W, H);
-        bg.addColorStop(0, "#143D5B");
-        bg.addColorStop(1, "#0C2D43");
-        ctx.fillStyle = bg;
-        ctx.fillRect(0, 0, W, H);
-
-        ctx.save();
-        ctx.globalAlpha = 0.14;
-        ctx.fillStyle = "#26A269";
-        ctx.beginPath();
-        ctx.arc(-40, -40, 260, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.restore();
-        ctx.save();
-        ctx.globalAlpha = 0.10;
-        ctx.fillStyle = "#FFD166";
-        ctx.beginPath();
-        ctx.arc(W + 60, H * 0.32, 220, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.restore();
-
-        // 로고
-        const logo = await loadLogoImage();
-        if (logo) {
-          const logoW = 220;
-          const logoH = logoW * (logo.height / logo.width);
-          ctx.drawImage(logo, PAD, 64, logoW, logoH);
+        function drawSparkle(cx, cy, r, color, alpha) {
+          ctx.save();
+          ctx.globalAlpha = alpha;
+          ctx.fillStyle = color;
+          ctx.beginPath();
+          ctx.moveTo(cx, cy - r);
+          ctx.quadraticCurveTo(cx + r * 0.18, cy - r * 0.18, cx + r, cy);
+          ctx.quadraticCurveTo(cx + r * 0.18, cy + r * 0.18, cx, cy + r);
+          ctx.quadraticCurveTo(cx - r * 0.18, cy + r * 0.18, cx - r, cy);
+          ctx.quadraticCurveTo(cx - r * 0.18, cy - r * 0.18, cx, cy - r);
+          ctx.closePath();
+          ctx.fill();
+          ctx.restore();
         }
 
-        // 흰색 카드
-        const cardX = PAD, cardY = 210, cardW = W - PAD * 2, cardR = 36;
+        // 배경: 유형별 파스텔 단색
+        ctx.fillStyle = bgColor;
+        ctx.fillRect(0, 0, W, H);
+
+        // 점선 테두리 프레임
         ctx.save();
-        ctx.shadowColor = "rgba(0,0,0,0.28)";
-        ctx.shadowBlur = 50;
-        ctx.shadowOffsetY = 24;
+        ctx.strokeStyle = accent;
+        ctx.globalAlpha = 0.45;
+        ctx.lineWidth = 3;
+        ctx.setLineDash([2, 14]);
+        ctx.lineCap = "round";
+        ctx.beginPath();
+        ctx.roundRect(40, 40, W - 80, H - 80, 40);
+        ctx.stroke();
+        ctx.restore();
+
+        // 캐릭터 주변 반짝이 장식
+        drawSparkle(cx0 + 230, 190, 22, accent, 0.85);
+        drawSparkle(cx0 - 250, 150, 14, accent, 0.6);
+        drawSparkle(cx0 + 300, 320, 10, "#FFFFFF", 0.9);
+        drawSparkle(cx0 - 300, 340, 12, "#FFFFFF", 0.7);
+
+        // 로고 (작게, 좌상단)
+        const logo = await loadLogoImage();
+        if (logo) {
+          const logoW = 176;
+          const logoH = logoW * (logo.height / logo.width);
+          ctx.drawImage(logo, 76, 72, logoW, logoH);
+        }
+
+        // 상단 라벨
+        ctx.textAlign = "center";
+        ctx.fillStyle = accentDark;
+        ctx.globalAlpha = 0.75;
+        ctx.font = `800 26px ${FONT}`;
+        ctx.fillText("나의 임팩트 유형은...", cx0, 178);
+        ctx.globalAlpha = 1;
+
+        // 캐릭터(동물 아이콘) 뒤 큰 원형 배지
+        const charCY = 400, charR = 190;
+        ctx.save();
+        ctx.shadowColor = "rgba(0,0,0,0.10)";
+        ctx.shadowBlur = 40;
+        ctx.shadowOffsetY = 18;
         ctx.fillStyle = "#FFFFFF";
         ctx.beginPath();
-        ctx.roundRect(cardX, cardY, cardW, H - cardY - 84, cardR);
+        ctx.arc(cx0, charCY, charR, 0, Math.PI * 2);
         ctx.fill();
         ctx.restore();
 
-        let y = cardY + 78;
-        const innerX = cardX + 56;
-        const innerW = cardW - 112;
-
-        // 아이콘 배지
-        ctx.fillStyle = "#EAF7F0";
-        ctx.beginPath();
-        ctx.roundRect(innerX, y - 54, 96, 96, 26);
-        ctx.fill();
-        ctx.font = `52px ${FONT}`;
+        ctx.font = `280px ${FONT}`;
         ctx.textAlign = "center";
         ctx.textBaseline = "middle";
-        ctx.fillText(t.icon, innerX + 48, y - 6);
-        ctx.textAlign = "left";
+        ctx.fillText(t.icon, cx0, charCY + 14);
+        ctx.textBaseline = "alphabetic";
 
-        // 킥커
-        const trimmedName = (name || "").trim();
-        const kickerText = trimmedName
-          ? `${trimmedName.slice(0, 12)}님의 임팩트 유형`
-          : "나의 임팩트 유형";
-        ctx.fillStyle = "#26A269";
-        ctx.font = `900 26px ${FONT}`;
-        ctx.fillText(kickerText, innerX + 116, y - 30);
+        let y = charCY + charR + 90;
 
         // 제목
-        ctx.fillStyle = "#0C2D43";
-        ctx.font = `900 54px ${FONT}`;
-        ctx.fillText(`${t.name}`, innerX + 116, y + 16);
+        ctx.fillStyle = accentDark;
+        ctx.font = `900 58px ${FONT}`;
+        ctx.fillText(t.name, cx0, y);
 
-        y += 90;
+        // 이름 배지 (선택 입력)
+        const trimmedName = (name || "").trim();
+        if (trimmedName) {
+          y += 46;
+          ctx.font = `800 25px ${FONT}`;
+          ctx.fillStyle = accent;
+          ctx.fillText(`${trimmedName.slice(0, 12)}님의 결과예요`, cx0, y);
+        }
 
-        // 설명
-        ctx.fillStyle = "#627985";
-        ctx.font = `600 30px ${FONT}`;
-        const descLines = wrapCanvasLines(ctx, t.desc, innerW);
-        descLines.forEach(line => { y += 42; ctx.fillText(line, innerX, y); });
+        // 태그라인
+        y += 50;
+        ctx.font = `800 27px ${FONT}`;
+        ctx.fillStyle = accent;
+        ctx.fillText(t.tagline || t.label, cx0, y);
 
-        y += 44;
-        ctx.strokeStyle = "#D8E3E8";
-        ctx.lineWidth = 2;
-        ctx.beginPath();
-        ctx.moveTo(innerX, y);
-        ctx.lineTo(innerX + innerW, y);
-        ctx.stroke();
         y += 56;
 
-        // 잘 맞는 활동
-        ctx.fillStyle = "#143D5B";
-        ctx.font = `900 30px ${FONT}`;
-        ctx.fillText("잘 맞는 활동", innerX, y);
-        y += 18;
-
-        ctx.font = `800 28px ${FONT}`;
+        // 흰색 콘텐츠 패널
+        const panelX = 96, panelW = W - 192;
+        const panelPadY = 40;
+        ctx.font = `600 27px ${FONT}`;
+        const descLines = wrapCanvasLines(ctx, t.desc, panelW - 80);
+        const chipFont = `700 24px ${FONT}`;
+        ctx.font = chipFont;
+        const chipPadX = 22, chipH = 48, chipGap = 12, chipRowGap = 12;
+        const chipRows = [];
+        let rowItems = [], rowWidth = 0;
         t.activities.slice(0, 4).forEach(item => {
-          y += 46;
-          ctx.fillStyle = "#26A269";
-          ctx.font = `900 28px ${FONT}`;
-          ctx.fillText("✓", innerX, y);
-          ctx.fillStyle = "#38515E";
-          ctx.font = `700 28px ${FONT}`;
-          ctx.fillText(item, innerX + 38, y);
+          const label = "✓ " + item;
+          const w = ctx.measureText(label).width + chipPadX * 2;
+          if (rowWidth + w + (rowItems.length ? chipGap : 0) > panelW - 80 && rowItems.length) {
+            chipRows.push({ items: rowItems, width: rowWidth });
+            rowItems = []; rowWidth = 0;
+          }
+          if (rowItems.length) rowWidth += chipGap;
+          rowWidth += w;
+          rowItems.push({ label, w });
+        });
+        if (rowItems.length) chipRows.push({ items: rowItems, width: rowWidth });
+
+        const panelH = panelPadY + descLines.length * 38 + 34 + chipRows.length * (chipH + chipRowGap) + panelPadY;
+        ctx.save();
+        ctx.shadowColor = "rgba(0,0,0,0.08)";
+        ctx.shadowBlur = 30;
+        ctx.shadowOffsetY = 14;
+        ctx.fillStyle = "#FFFFFF";
+        ctx.beginPath();
+        ctx.roundRect(panelX, y, panelW, panelH, 32);
+        ctx.fill();
+        ctx.restore();
+
+        let py = y + panelPadY;
+        ctx.textAlign = "left";
+        ctx.fillStyle = "#4B5B63";
+        ctx.font = `600 27px ${FONT}`;
+        descLines.forEach(line => { py += 30; ctx.fillText(line, panelX + 40, py); });
+        py += 8;
+
+        py += 34;
+        let cx2 = panelX + 40, cy2 = py;
+        let curRowW = chipRows[0] ? chipRows[0].width : 0;
+        let curStartX = panelX + 40;
+        chipRows.forEach((row, ri) => {
+          cx2 = panelX + 40;
+          ctx.font = chipFont;
+          row.items.forEach(({ label, w }) => {
+            ctx.fillStyle = bgColor;
+            ctx.beginPath();
+            ctx.roundRect(cx2, cy2, w, chipH, chipH / 2);
+            ctx.fill();
+            ctx.fillStyle = accentDark;
+            ctx.textBaseline = "middle";
+            ctx.fillText(label, cx2 + chipPadX, cy2 + chipH / 2 + 1);
+            ctx.textBaseline = "alphabetic";
+            cx2 += w + chipGap;
+          });
+          cy2 += chipH + chipRowGap;
         });
 
-        y += 66;
+        y = y + panelH + 44;
 
-        // 오늘의 임팩트 액션 박스
-        const boxH = 176;
-        const boxGrad = ctx.createLinearGradient(innerX, y, innerX + innerW, y + boxH);
-        boxGrad.addColorStop(0, "#143D5B");
-        boxGrad.addColorStop(1, "#17648E");
-        ctx.fillStyle = boxGrad;
+        // 오늘의 임팩트 액션
+        ctx.save();
+        ctx.shadowColor = "rgba(0,0,0,0.10)";
+        ctx.shadowBlur = 24;
+        ctx.shadowOffsetY = 10;
+        ctx.fillStyle = accentDark;
         ctx.beginPath();
-        ctx.roundRect(innerX, y, innerW, boxH, 24);
+        ctx.roundRect(panelX, y, panelW, 150, 28);
         ctx.fill();
+        ctx.restore();
 
-        ctx.fillStyle = "rgba(255,255,255,0.78)";
-        ctx.font = `900 24px ${FONT}`;
-        ctx.fillText("오늘의 임팩트 액션", innerX + 30, y + 44);
+        ctx.textAlign = "left";
+        ctx.fillStyle = "rgba(255,255,255,0.75)";
+        ctx.font = `900 23px ${FONT}`;
+        ctx.fillText("🎯 오늘의 임팩트 액션", panelX + 32, y + 42);
 
         ctx.fillStyle = "#FFFFFF";
-        ctx.font = `800 27px ${FONT}`;
-        const actionLines = wrapCanvasLines(ctx, t.action, innerW - 60);
-        let ay = y + 84;
+        ctx.font = `800 25px ${FONT}`;
+        const actionLines = wrapCanvasLines(ctx, t.action, panelW - 64);
+        let ay = y + 78;
         actionLines.slice(0, 3).forEach(line => {
-          ctx.fillText(line, innerX + 30, ay);
-          ay += 36;
+          ctx.fillText(line, panelX + 32, ay);
+          ay += 33;
         });
 
         // 하단 브랜드 문구
         ctx.textAlign = "center";
-        ctx.fillStyle = "rgba(255,255,255,0.82)";
-        ctx.font = `800 24px ${FONT}`;
-        ctx.fillText(`#${t.label}  ·  15문항 임팩트 유형 테스트  ·  함께일하는재단`, W / 2, H - 40);
+        ctx.fillStyle = accentDark;
+        ctx.globalAlpha = 0.7;
+        ctx.font = `800 22px ${FONT}`;
+        ctx.fillText(`#${t.label}  ·  15문항 임팩트 유형 테스트  ·  함께일하는재단 💚`, cx0, H - 56);
+        ctx.globalAlpha = 1;
         ctx.textAlign = "left";
 
       return canvas;
