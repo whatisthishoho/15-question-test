@@ -1297,11 +1297,20 @@
 
       const t = TYPES[currentResult];
       sendBtn.disabled = true;
-      sendBtn.textContent = "전송 중...";
+      sendBtn.textContent = "이미지 만드는 중...";
       status.textContent = "";
       status.className = "email-status";
 
       try {
+        let imageBase64 = "";
+        try {
+          imageBase64 = await getResultImageBase64(t);
+        } catch (imgErr) {
+          imageBase64 = ""; // 이미지 생성 실패해도 이메일 발송은 계속 진행
+        }
+
+        sendBtn.textContent = "전송 중...";
+
         const res = await fetch(CONFIG.emailEndpoint, {
           method: "POST",
           headers: { "Content-Type": "text/plain;charset=utf-8" },
@@ -1312,7 +1321,8 @@
             resultDesc: t.desc,
             resultAction: t.action,
             consent: true,
-            submittedAt: new Date().toISOString()
+            submittedAt: new Date().toISOString(),
+            imageBase64
           })
         });
         const data = await res.json().catch(() => null);
@@ -1535,15 +1545,7 @@
       });
     }
 
-    async function downloadResultImage() {
-      if (!currentResult) return;
-      const t = TYPES[currentResult];
-      const btn = document.getElementById("download-image-btn");
-      const originalLabel = btn.textContent;
-      btn.textContent = "이미지 만드는 중…";
-      btn.disabled = true;
-
-      try {
+    async function buildResultCanvas(t) {
         const W = 1080, H = 1350, PAD = 76;
         const canvas = document.createElement("canvas");
         canvas.width = W;
@@ -1684,6 +1686,19 @@
         ctx.fillText(`#${t.label}  ·  15문항 임팩트 유형 테스트  ·  함께일하는재단`, W / 2, H - 40);
         ctx.textAlign = "left";
 
+      return canvas;
+    }
+
+    async function downloadResultImage() {
+      if (!currentResult) return;
+      const t = TYPES[currentResult];
+      const btn = document.getElementById("download-image-btn");
+      const originalLabel = btn.textContent;
+      btn.textContent = "이미지 만드는 중…";
+      btn.disabled = true;
+
+      try {
+        const canvas = await buildResultCanvas(t);
         const blob = await new Promise(resolve => canvas.toBlob(resolve, "image/png"));
         if (!blob) throw new Error("이미지 생성 실패");
         const ok = await saveFile(`임팩트유형테스트_${t.label}_결과.png`, blob);
@@ -1694,6 +1709,12 @@
         btn.textContent = originalLabel;
         btn.disabled = false;
       }
+    }
+
+    async function getResultImageBase64(t) {
+      const canvas = await buildResultCanvas(t);
+      const dataUrl = canvas.toDataURL("image/png");
+      return dataUrl.split(",")[1] || "";
     }
 
     bindTap(document.getElementById("start-btn"), startTest);
