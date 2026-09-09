@@ -677,6 +677,7 @@
       background: var(--blue-light);
       color: var(--navy);
       border: 1px solid rgba(20,61,91,.10);
+      white-space: pre-line;
     }
     @media (hover: hover) and (pointer: fine) {
       .secondary-btn:hover { background: #DDECF3; }
@@ -1687,7 +1688,7 @@
       document.getElementById("action-text").textContent = t.action;
 
       const casesBtn = document.getElementById("cases-btn");
-      if (casesBtn) casesBtn.textContent = `${t.name}의 주요 활동 보기`;
+      if (casesBtn) casesBtn.textContent = `${t.name}의\n주요 활동 보기`;
 
       const list = document.getElementById("activity-list");
       list.innerHTML = "";
