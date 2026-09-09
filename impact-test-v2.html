@@ -1569,7 +1569,7 @@
       clearTimeout(showMidCheer._timer);
       showMidCheer._timer = setTimeout(() => {
         el.classList.remove("show");
-      }, 2400);
+      }, 2000);
     }
 
     document.getElementById("mid-cheer").addEventListener("click", () => {
@@ -1766,10 +1766,11 @@
           btn.textContent = "전송 완료";
           commentInput.disabled = true;
         } else {
-          throw new Error("bad_response");
+          const serverMsg = data && data.message ? (" [서버: " + data.message + "]") : "";
+          throw new Error("bad_response" + serverMsg);
         }
       } catch (err) {
-        status.textContent = "전송에 실패했어요. 잠시 후 다시 시도해 주세요.";
+        status.textContent = "전송에 실패했어요. 잠시 후 다시 시도해 주세요. [디버그: " + (err && err.message ? err.message : String(err)) + "]";
         status.className = "email-status err";
         btn.disabled = false;
         btn.textContent = "남기기";
