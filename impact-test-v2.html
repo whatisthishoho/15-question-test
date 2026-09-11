@@ -1069,6 +1069,9 @@
               <input id="info-name-input" class="email-input" type="text" placeholder="이름을 입력해 주세요" autocomplete="name" maxlength="20" />
             </div>
             <div class="email-row name-row">
+              <input id="info-age-input" class="email-input" type="number" inputmode="numeric" placeholder="만 나이를 입력해 주세요" min="1" max="120" maxlength="3" />
+            </div>
+            <div class="email-row name-row">
               <input id="info-phone-input" class="email-input" type="tel" placeholder="연락처를 입력해 주세요 (예: 010-1234-5678)" autocomplete="tel" value="010-" />
             </div>
             <div class="email-row name-row">
@@ -1088,7 +1091,7 @@
               </span>
             </label>
             <div id="info-consent-details" class="consent-details">
-              · 수집 항목: 이름, 연락처, 이메일 주소<br />
+              · 수집 항목: 이름, 만 나이, 연락처, 이메일 주소<br />
               · 수집 목적: 테스트 결과 이메일 발송(결과 카드 개인화 포함), 사업 성과보고 및 홍보 활용<br />
               · 보유·이용 기간: 수집일로부터 3년간 보관 후 파기<br />
               · 동의를 거부하실 수 있으며, 거부 시 테스트에 참여하실 수 없습니다.<br />
@@ -1487,7 +1490,7 @@
     let currentResult = null;
     let countedThisRun = false;
     let midCheerShown = false;
-    let participantInfo = { name: "", phone: "", email: "", newsletter: false };
+    let participantInfo = { name: "", age: "", phone: "", email: "", newsletter: false };
 
     function showScreen(name) {
       Object.values(screens).forEach(el => el.classList.remove("active"));
@@ -1506,6 +1509,7 @@
     function startTest() {
       participantInfo = {
         name: document.getElementById("info-name-input").value.trim(),
+        age: document.getElementById("info-age-input").value.trim(),
         phone: document.getElementById("info-phone-input").value.trim(),
         email: document.getElementById("info-email-input").value.trim(),
         newsletter: document.getElementById("info-newsletter-checkbox").checked
@@ -1750,6 +1754,7 @@
           body: JSON.stringify({
             action: "comment",
             name: participantInfo.name,
+            age: participantInfo.age,
             phone: participantInfo.phone,
             email: participantInfo.email,
             newsletter: participantInfo.newsletter,
@@ -1786,6 +1791,11 @@
       return /^[0-9\-+ ]{9,14}$/.test(value);
     }
 
+    function isValidAge(value) {
+      const n = Number(value);
+      return value.length > 0 && Number.isFinite(n) && n >= 1 && n <= 120;
+    }
+
     function formatPhoneNumber(value) {
       const digits = value.replace(/\D/g, "").slice(0, 11);
       if (digits.length < 4) return digits;
@@ -1804,17 +1814,18 @@
 
     function updateInfoButtonState() {
       const name = document.getElementById("info-name-input").value.trim();
+      const age = document.getElementById("info-age-input").value.trim();
       const phone = document.getElementById("info-phone-input").value.trim();
       const email = document.getElementById("info-email-input").value.trim();
       const agreed = document.getElementById("info-consent-checkbox").checked;
       document.getElementById("info-next-btn").disabled =
-        !(name.length > 0 && isValidPhone(phone) && isValidEmail(email) && agreed);
+        !(name.length > 0 && isValidAge(age) && isValidPhone(phone) && isValidEmail(email) && agreed);
     }
 
     async function sendResultEmail() {
       const status = document.getElementById("email-status");
       const sendBtn = document.getElementById("send-email-btn");
-      const { name, phone, email, newsletter } = participantInfo;
+      const { name, age, phone, email, newsletter } = participantInfo;
 
       if (!name || !isValidEmail(email) || !currentResult) return;
 
@@ -1848,6 +1859,7 @@
           headers: { "Content-Type": "text/plain;charset=utf-8" },
           body: JSON.stringify({
             name,
+            age,
             phone,
             email,
             newsletter,
@@ -2378,6 +2390,7 @@
       document.getElementById("info-consent-details").classList.toggle("open");
     });
     document.getElementById("info-name-input").addEventListener("input", updateInfoButtonState);
+    document.getElementById("info-age-input").addEventListener("input", updateInfoButtonState);
     document.getElementById("info-phone-input").addEventListener("input", (e) => {
       const cursorAtEnd = e.target.selectionEnd === e.target.value.length;
       e.target.value = formatPhoneNumber(e.target.value);
