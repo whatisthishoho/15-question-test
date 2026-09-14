@@ -1727,6 +1727,51 @@
       if (commentBtn) { commentBtn.disabled = false; commentBtn.textContent = "남기기"; }
     }
 
+    // 구글 앱스 스크립트에 1회 요청을 보내고 결과를 파싱한다.
+    async function postToScriptOnce_(payload) {
+      const res = await fetch(CONFIG.emailEndpoint, {
+        method: "POST",
+        headers: { "Content-Type": "text/plain;charset=utf-8" },
+        body: JSON.stringify(payload)
+      });
+      const rawText = await res.text();
+      let data = null;
+      try { data = JSON.parse(rawText); } catch (parseErr) { data = null; }
+      return { res, data, rawText };
+    }
+
+    // 콜드 스타트 등 일시적인 실패에 대비해, 실패 시 잠시 대기 후 한 번 더 시도한다.
+    async function postToScriptWithRetry_(payload, retries) {
+      if (retries === undefined) retries = 1;
+      let last = null;
+      for (let attempt = 0; attempt <= retries; attempt++) {
+        try {
+          last = await postToScriptOnce_(payload);
+          if (last.res.ok && last.data && last.data.status === "ok") {
+            return last;
+          }
+        } catch (networkErr) {
+          last = { res: null, data: null, rawText: "", networkErr };
+        }
+        if (attempt < retries) {
+          await new Promise((resolve) => setTimeout(resolve, 1200));
+        }
+      }
+      return last;
+    }
+
+    function describeBadResponse_(result) {
+      if (result && result.networkErr) {
+        return "bad_response [네트워크: " + (result.networkErr.message || String(result.networkErr)) + "]";
+      }
+      const data = result && result.data;
+      const serverMsg = data && data.message ? (" [서버: " + data.message + "]") : "";
+      const rawSnippet = (!data && result && result.res)
+        ? (" [응답: HTTP " + result.res.status + " / " + (result.rawText || "").slice(0, 120).replace(/\s+/g, " ") + "]")
+        : "";
+      return "bad_response" + serverMsg + rawSnippet;
+    }
+
     async function submitComment() {
       const status = document.getElementById("comment-status");
       const btn = document.getElementById("comment-send-btn");
@@ -1748,32 +1793,26 @@
       status.className = "email-status";
 
       try {
-        const res = await fetch(CONFIG.emailEndpoint, {
-          method: "POST",
-          headers: { "Content-Type": "text/plain;charset=utf-8" },
-          body: JSON.stringify({
-            action: "comment",
-            name: participantInfo.name,
-            age: participantInfo.age,
-            phone: participantInfo.phone,
-            email: participantInfo.email,
-            newsletter: participantInfo.newsletter,
-            consent: true,
-            resultKey: currentResult,
-            resultName: t.name,
-            comment,
-            submittedAt: new Date().toISOString()
-          })
+        const result = await postToScriptWithRetry_({
+          action: "comment",
+          name: participantInfo.name,
+          age: participantInfo.age,
+          phone: participantInfo.phone,
+          email: participantInfo.email,
+          newsletter: participantInfo.newsletter,
+          consent: true,
+          resultKey: currentResult,
+          resultName: t.name,
+          comment,
+          submittedAt: new Date().toISOString()
         });
-        const data = await res.json().catch(() => null);
-        if (res.ok && data && data.status === "ok") {
+        if (result.res && result.res.ok && result.data && result.data.status === "ok") {
           status.textContent = "소중한 한 줄 남겨주셔서 감사해요 💌";
           status.className = "email-status ok";
           btn.textContent = "전송 완료";
           commentInput.disabled = true;
         } else {
-          const serverMsg = data && data.message ? (" [서버: " + data.message + "]") : "";
-          throw new Error("bad_response" + serverMsg);
+          throw new Error(describeBadResponse_(result));
         }
       } catch (err) {
         status.textContent = "전송에 실패했어요. 잠시 후 다시 시도해 주세요. [디버그: " + (err && err.message ? err.message : String(err)) + "]";
@@ -1854,32 +1893,26 @@
 
         sendBtn.textContent = "전송 중...";
 
-        const res = await fetch(CONFIG.emailEndpoint, {
-          method: "POST",
-          headers: { "Content-Type": "text/plain;charset=utf-8" },
-          body: JSON.stringify({
-            name,
-            age,
-            phone,
-            email,
-            newsletter,
-            resultKey: currentResult,
-            resultName: t.name,
-            resultDesc: t.desc,
-            resultAction: t.action,
-            consent: true,
-            submittedAt: new Date().toISOString(),
-            imageBase64
-          })
+        const result = await postToScriptWithRetry_({
+          name,
+          age,
+          phone,
+          email,
+          newsletter,
+          resultKey: currentResult,
+          resultName: t.name,
+          resultDesc: t.desc,
+          resultAction: t.action,
+          consent: true,
+          submittedAt: new Date().toISOString(),
+          imageBase64
         });
-        const data = await res.json().catch(() => null);
-        if (res.ok && data && data.status === "ok") {
+        if (result.res && result.res.ok && result.data && result.data.status === "ok") {
           status.textContent = "결과를 이메일로 보내드렸어요. 잠시 후 도착합니다." + imageDebugNote;
           status.className = "email-status " + (imageDebugNote ? "err" : "ok");
           sendBtn.textContent = "전송 완료";
         } else {
-          const serverMsg = data && data.message ? (" [서버: " + data.message + "]") : "";
-          throw new Error("bad_response" + serverMsg);
+          throw new Error(describeBadResponse_(result));
         }
       } catch (err) {
         status.textContent = "전송에 실패했어요. 잠시 후 다시 시도해 주세요. [디버그: " + (err && err.message ? err.message : String(err)) + "]";
