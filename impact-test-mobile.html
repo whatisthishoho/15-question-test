@@ -2102,7 +2102,7 @@
     function openCases() {
       if (!currentResult) return;
       const t = TYPES[currentResult];
-      document.getElementById("cases-title").innerHTML = `${t.name}의 주요 활동<br /><span class="cases-title-sub">(함께일하는재단 사업)</span>`;
+      document.getElementById("cases-title").innerHTML = `${t.name}의<br />주요 활동<br /><span class="cases-title-sub">(함께일하는재단 사업)</span>`;
       const grid = document.getElementById("case-grid");
       grid.innerHTML = "";
       t.cases.forEach(([title, desc, url]) => {
