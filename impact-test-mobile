@@ -134,6 +134,90 @@
       to { opacity: 1; transform: translateY(0); }
     }
 
+    @keyframes startPop {
+      0% { opacity: 0; transform: scale(.55) translateY(14px); }
+      60% { opacity: 1; transform: scale(1.14) translateY(-4px); }
+      80% { transform: scale(.96) translateY(1px); }
+      100% { opacity: 1; transform: scale(1) translateY(0); }
+    }
+    #start-screen.active .start-preview-icon {
+      opacity: 0;
+      animation: startPop .6s cubic-bezier(.34, 1.56, .64, 1) both;
+    }
+    #start-screen.active .start-preview-icon:nth-child(1) { animation-delay: .05s; }
+    #start-screen.active .start-preview-icon:nth-child(2) { animation-delay: .16s; }
+    #start-screen.active .start-preview-icon:nth-child(3) { animation-delay: .27s; }
+    #start-screen.active .start-preview-icon:nth-child(4) { animation-delay: .38s; }
+
+    .mid-cheer {
+      position: fixed;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      z-index: 60;
+      background: rgba(50, 45, 10, 0);
+      transition: opacity .25s ease, background .25s ease;
+    }
+    .mid-cheer.show {
+      opacity: 1;
+      pointer-events: auto;
+      background: rgba(50, 45, 10, .16);
+    }
+    .mid-cheer-inner {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 14px;
+      background: #fff;
+      border: 3px solid var(--lemon-line, #EDE7A8);
+      border-radius: 32px;
+      padding: 30px 32px 26px;
+      max-width: min(84vw, 340px);
+      box-shadow: 0 26px 60px -12px rgba(20, 30, 60, .38);
+      text-align: center;
+      transform: scale(.4) rotate(-6deg);
+      opacity: 0;
+    }
+    .mid-cheer.show .mid-cheer-inner {
+      animation: cheerPop .68s cubic-bezier(.34, 1.56, .64, 1) both;
+    }
+    @keyframes cheerPop {
+      0% { transform: scale(.4) rotate(-6deg); opacity: 0; }
+      55% { transform: scale(1.14) rotate(3deg); opacity: 1; }
+      75% { transform: scale(.95) rotate(-1.5deg); }
+      100% { transform: scale(1) rotate(0); opacity: 1; }
+    }
+    .mid-cheer-sparkle {
+      font-size: 26px;
+      margin-bottom: -6px;
+      animation: sparkleSpin 1.6s ease-in-out infinite;
+    }
+    @keyframes sparkleSpin {
+      0%, 100% { transform: rotate(-8deg) scale(1); }
+      50% { transform: rotate(8deg) scale(1.15); }
+    }
+    .mid-cheer-icon {
+      width: 116px;
+      height: 116px;
+      border-radius: 50%;
+      object-fit: cover;
+      box-shadow: 0 10px 24px -6px rgba(20, 30, 60, .3), inset 0 0 0 5px #f6f4e2;
+    }
+    .mid-cheer-text {
+      font-size: 19px;
+      font-weight: 900;
+      color: var(--navy-2, #33415c);
+      word-break: keep-all;
+      line-height: 1.45;
+    }
+    @media (max-width: 480px) {
+      .mid-cheer-icon { width: 92px; height: 92px; }
+      .mid-cheer-text { font-size: 16px; }
+    }
+
     .card {
       background: rgba(255,255,255,.96);
       border: 1px solid rgba(20,61,91,.09);
@@ -194,6 +278,9 @@
     .start-eyebrow-lemon {
       color: var(--lemon-ink, #8A6A1F);
       background: var(--lemon, #FCEFC7);
+      font-size: clamp(10px, 1.6vw, 13px);
+      padding: 6px 11px;
+      margin-bottom: 10px;
     }
 
     h1, h2, h3, p { margin-top: 0; }
@@ -289,6 +376,7 @@
       color: var(--navy-2);
       margin-bottom: 28px;
       word-break: keep-all;
+      white-space: pre-line;
     }
 
     .answers {
@@ -440,7 +528,8 @@
       }
     }
     .start-preview-icon {
-      width: 100%;
+      width: 70%;
+      margin: 0 auto;
       aspect-ratio: 1 / 1;
       border-radius: 50%;
       background: #fff;
@@ -589,6 +678,7 @@
       background: var(--blue-light);
       color: var(--navy);
       border: 1px solid rgba(20,61,91,.10);
+      white-space: pre-line;
     }
     @media (hover: hover) and (pointer: fine) {
       .secondary-btn:hover { background: #DDECF3; }
@@ -784,11 +874,16 @@
       gap: 12px;
     }
     .case-card {
+      display: block;
       border: 1px solid var(--line);
       border-radius: 18px;
       padding: 18px;
       background: #FBFDFD;
+      text-decoration: none;
+      color: inherit;
     }
+    a.case-card { cursor: pointer; transition: border-color .15s, transform .15s; }
+    a.case-card:hover { border-color: var(--accent, #999); transform: translateY(-1px); }
     .case-card strong {
       display: block;
       color: var(--navy);
@@ -972,7 +1067,7 @@
       <section id="info-screen" class="screen" aria-labelledby="info-title">
         <div class="card start-card" style="--acc: #E3B23C; --acc-soft: #FBF6D9; --acc-dark: #8C6D1F; text-align:left;">
           <div class="eyebrow start-eyebrow-lemon" style="display:flex; margin-left:auto; margin-right:auto;">테스트 시작 전 정보 입력</div>
-          <h2 id="info-title" style="text-align:center; font-size:clamp(24px, 3.6vw, 32px); color:var(--navy-2); margin-bottom:10px;">결과를 받아보실 정보를 입력해 주세요</h2>
+          <h2 id="info-title" style="text-align:center; font-size:clamp(24px, 3.6vw, 32px); color:var(--navy-2); margin-bottom:10px;">결과를 받아보실 정보를<br>입력해 주세요</h2>
           <p class="lead" style="text-align:center; font-size:16px;">입력하신 정보로 테스트 결과를 보내드려요.</p>
 
           <div class="email-panel">
@@ -980,7 +1075,10 @@
               <input id="info-name-input" class="email-input" type="text" placeholder="이름을 입력해 주세요" autocomplete="name" maxlength="20" />
             </div>
             <div class="email-row name-row">
-              <input id="info-phone-input" class="email-input" type="tel" placeholder="연락처를 입력해 주세요 (예: 010-1234-5678)" autocomplete="tel" />
+              <input id="info-age-input" class="email-input" type="number" inputmode="numeric" placeholder="만 나이를 입력해 주세요" min="1" max="120" maxlength="3" />
+            </div>
+            <div class="email-row name-row">
+              <input id="info-phone-input" class="email-input" type="tel" placeholder="연락처를 입력해 주세요 (예: 010-1234-5678)" autocomplete="tel" value="010-" />
             </div>
             <div class="email-row name-row">
               <input id="info-email-input" class="email-input" type="email" placeholder="이메일 주소를 입력해 주세요" autocomplete="email" />
@@ -999,7 +1097,7 @@
               </span>
             </label>
             <div id="info-consent-details" class="consent-details">
-              · 수집 항목: 이름, 연락처, 이메일 주소<br />
+              · 수집 항목: 이름, 만 나이, 연락처, 이메일 주소<br />
               · 수집 목적: 테스트 결과 이메일 발송(결과 카드 개인화 포함), 사업 성과보고 및 홍보 활용<br />
               · 보유·이용 기간: 수집일로부터 3년간 보관 후 파기<br />
               · 동의를 거부하실 수 있으며, 거부 시 테스트에 참여하실 수 없습니다.<br />
@@ -1033,6 +1131,14 @@
           </div>
         </div>
       </section>
+
+      <div id="mid-cheer" class="mid-cheer" aria-hidden="true">
+        <div class="mid-cheer-inner">
+          <div class="mid-cheer-sparkle">✨</div>
+          <img id="mid-cheer-icon" class="mid-cheer-icon" alt="" />
+          <span id="mid-cheer-text" class="mid-cheer-text"></span>
+        </div>
+      </div>
 
       <section id="tie-screen" class="screen" aria-live="polite">
         <div class="card tie-card">
@@ -1095,7 +1201,8 @@
     </main>
 
     <div class="footer-note">
-      익명 참여 통계는 이 기기에만 저장됩니다. 이메일은 입력하신 분에 한해 별도 동의를 거쳐 결과 발송 목적으로만 사용됩니다.
+      익명 참여 통계는 이 기기에만 저장됩니다.<br>
+      이메일은 입력하신 분에 한해 별도 동의를 거쳐 결과 발송 목적으로만 사용됩니다.
     </div>
   </div>
 
@@ -1103,8 +1210,7 @@
   <div id="cases-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="cases-title">
     <div class="modal-card">
       <button class="modal-close" data-close="cases-modal" aria-label="닫기">×</button>
-      <h2 id="cases-title">주요 활동</h2>
-      <p class="sub">이 유형이 실제로 이런 일을 해요. (예시이며, 실제 재단 지원기업 사례로 교체하여 사용할 수 있습니다.)</p>
+      <h2 id="cases-title">주요 활동 (함께일하는재단 사업)</h2>
       <div id="case-grid" class="case-grid"></div>
     </div>
   </div>
@@ -1134,7 +1240,7 @@
       storageKey: "impact_test_stats_v1",
       // 아래에 Google Apps Script 웹앱 배포 URL을 붙여넣어 주세요.
       // (비워두면 "결과 받기" 버튼이 항상 실패 메시지를 보여줍니다.)
-      emailEndpoint: "https://script.google.com/macros/s/AKfycbw22W52nc0674Q-S91inUe0bx2-SXgUAf_DuKFZFtAv5IInalJtdN8UI_-lsoC0KoiX/exec"
+      emailEndpoint: "https://script.google.com/macros/s/AKfycbwpKWD5hmDuE5uGpYlIzX8VcQjiDEDaSYxx9wb7cyvC75pWe9hcE5XsuqPIUMT_WMta/exec"
     };
 
     const TYPES = {
@@ -1152,9 +1258,9 @@
         activities: ["사회문제 조사와 분석", "사용자 인터뷰", "정책 및 사업기획", "사회성과 측정", "리서치와 서비스 기획"],
         action: "관심 있는 사회문제의 당사자 이야기를 한 가지 찾아보세요.",
         cases: [
-          ["고립·은둔 청년 지원", "당사자 인터뷰와 생활환경 분석을 바탕으로 맞춤형 회복 프로그램을 설계합니다."],
-          ["지역문제 데이터 연구", "인구·일자리·생활 데이터를 분석해 지역에 필요한 서비스와 정책을 제안합니다."],
-          ["장애 접근성 개선", "사용자의 실제 이동과 이용 경험을 조사해 제품과 공간의 접근성을 높입니다."]
+          ["STP 해외 빈곤 가정 지원사업", "개발도상국 사회적기업과 협력해 빈곤 아동·가정의 자립을 지원하는 해외 사업입니다.", "http://eng.hamkke.org/"],
+          ["삼성 희망디딤돌2.0", "자립준비청년의 취업과 경제적 자립, 멘토링을 지원하는 사업입니다.", "https://jarip-hope.or.kr/main/main.php"],
+          ["공항 포티케어 서비스", "공항을 이용하는 교통약자를 위한 이동 지원 서비스를 운영하는 사업입니다.", "https://hamkke.org/archives/27353"]
         ]
       },
       idea: {
@@ -1171,9 +1277,9 @@
         activities: ["소셜벤처 창업", "사업모델 기획", "제품·서비스 개발", "창업 프로그램 참여", "사업개발"],
         action: "해결하고 싶은 문제와 해결방법을 한 문장으로 작성해 보세요.",
         cases: [
-          ["업사이클링 제품 개발", "버려지는 자원을 새로운 제품으로 전환하고 환경문제와 시장기회를 함께 해결합니다."],
-          ["돌봄 연결 플랫폼", "돌봄이 필요한 사람과 적합한 서비스를 연결하는 디지털 사업모델을 설계합니다."],
-          ["로컬푸드 브랜드", "지역 생산자의 판로 문제를 소비자 친화적인 제품과 브랜드로 해결합니다."]
+          ["D'velop(자립준비청년 디지털 진로지원 사업)", "자립준비청년의 디지털 역량을 키워 진로와 취업을 연계하는 사업입니다.", "https://www.flagup.kr/page/digital.php"],
+          ["현대오토에버와 함께하는 고교생 IT 꿈나무 성장지원 사업", "특성화고 학생들의 정보보안 등 IT 역량을 키워주는 교육 지원 사업입니다.", "https://autoeveritdream.com/"],
+          ["이주민 AI 데이터플래닛", "이주민을 AI 데이터 라벨링 전문인력으로 양성해 일자리로 연결하는 사업입니다.", "https://hamkke.org/archives/business/49372"]
         ]
       },
       execute: {
@@ -1190,9 +1296,9 @@
         activities: ["사회적기업·소셜벤처 취업", "프로젝트 운영", "서비스 운영", "마케팅과 영업", "고객 및 현장관리"],
         action: "관심 분야의 소셜벤처에서 어떤 직무를 채용하는지 찾아보세요.",
         cases: [
-          ["취약계층 일자리 사업", "교육·생산·판매 현장을 운영하며 안정적인 일자리와 사업성과를 함께 만듭니다."],
-          ["잉여식품 나눔 서비스", "식품 수거, 보관, 전달 과정을 관리해 낭비를 줄이고 필요한 곳에 연결합니다."],
-          ["교육 서비스 운영", "학습자 모집부터 수업 운영, 만족도 확인과 개선까지 현장을 책임집니다."]
+          ["GKL 로컬 관광기업 육성·지원사업", "지역 관광기업을 발굴해 성장 자금과 컨설팅을 지원하는 사업입니다.", "https://hamkke.org/archives/business/50117"],
+          ["MG희망나눔 사회연대경제조직 육성지원 사업", "지역 사회연대경제조직을 선정해 성장지원금과 컨설팅을 제공하는 사업입니다.", "http://www.mgse.co.kr/"],
+          ["모두의 공모(소규모 기관·단체 역량강화를 위한 인큐베이팅형 공모사업)", "소규모 복지기관·단체의 역량강화를 위해 자금과 교육을 지원하는 사업입니다.", "https://hamkke.org/archives/business/51003"]
         ]
       },
       connect: {
@@ -1209,9 +1315,9 @@
         activities: ["파트너십과 대외협력", "커뮤니티 운영", "홍보와 콘텐츠 제작", "기업 사회공헌과 ESG", "창업지원과 임팩트 투자"],
         action: "관심 있는 사회문제와 관련된 기관이나 커뮤니티 하나를 찾아보세요.",
         cases: [
-          ["기업 ESG 협력", "기업의 자원과 사회문제 해결 조직을 연결해 공동 프로젝트를 만듭니다."],
-          ["청년 커뮤니티 운영", "공통 관심사를 가진 청년들이 경험과 정보를 나누고 협업하도록 돕습니다."],
-          ["임팩트 창업 지원", "창업가, 멘토, 투자자와 지원기관을 연결해 소셜벤처의 성장을 지원합니다."]
+          ["우리동네 MG갤러리", "전국 지역에 갤러리 공간을 열어 지역 예술가와 주민을 연결하는 사업입니다.", "https://mggallery.kr/"],
+          ["카카오페이 소상공인 판로지원사업", "소상공인의 판로 확대를 위해 팝업스토어와 디지털 지원을 제공하는 사업입니다.", "https://kakaopaytogether.com/"],
+          ["하나 파워 온", "사회적기업과 소상공인의 성장을 지원하는 상생 프로젝트입니다.", "https://www.hanapoweron.com/"]
         ]
       }
     };
@@ -1234,108 +1340,108 @@
 
     const QUESTIONS = [
       {
-        title: "사회문제를 발견했을 때 나는?",
+        title: "💡 사회문제를 발견한 순간, 당신의 첫 반응은?",
         answers: [
-          { text: "왜 이런 문제가 생겼는지 원인부터 알아본다.", type: "problem" },
-          { text: "문제를 해결할 새로운 서비스나 아이디어를 생각한다.", type: "idea" }
+          { text: "“왜 이런 문제가 생겼지?” 원인을 파헤쳐본다.", type: "problem" },
+          { text: "“이걸 어떻게 바꿀 수 있을까?” 새로운 아이디어를 떠올린다.", type: "idea" }
         ]
       },
       {
-        title: "새로운 프로젝트에 참여한다면?",
+        title: "새로운 프로젝트에 합류했다! 당신은 어떤 쪽?",
         answers: [
-          { text: "계획한 일을 직접 실행하고 결과를 만드는 역할이 좋다.", type: "execute" },
-          { text: "사람과 기관을 연결하고 협력을 만드는 역할이 좋다.", type: "connect" }
+          { text: "계획한 일을 직접 실행하고 결과를 만드는 쪽", type: "execute" },
+          { text: "필요한 사람과 기관을 연결해 협력을 만들어가는 쪽", type: "connect" }
         ]
       },
       {
-        title: "처음 접하는 문제를 해결할 때 나는?",
+        title: "어떤 문제를 처음 접했을 때, 당신은?",
         answers: [
-          { text: "자료와 당사자 의견을 충분히 살펴본 뒤 방향을 정한다.", type: "problem" },
-          { text: "작게라도 먼저 실행해 보고 현장에서 답을 찾는다.", type: "execute" }
+          { text: "여러 자료와 관계자의 의견을 충분히 살펴본 뒤 생각한다.", type: "problem" },
+          { text: "일단 하나씩 실행해보며 현장에서 해결 방법을 찾는다.", type: "execute" }
         ]
       },
       {
-        title: "사회문제 해결 아이디어를 발전시킬 때 더 끌리는 일은?",
+        title: "💡 사회문제를 해결할 기막힌 아이디어가 떠올랐다! 그 다음 스텝은?",
         answers: [
-          { text: "제품·서비스와 사업구조를 새롭게 설계하는 일", type: "idea" },
-          { text: "필요한 파트너와 자원을 찾아 협력관계를 만드는 일", type: "connect" }
+          { text: "새로운 제품이나 서비스를 직접 만들어본다.", type: "idea" },
+          { text: "필요한 사람이나 기관을 연결해 협력한다.", type: "connect" }
         ]
       },
       {
-        title: "여러 이해관계자가 얽힌 문제를 만나면 나는?",
+        title: "여러 사람의 입장이 얽힌 사회문제를 만나면 나는?",
         answers: [
-          { text: "문제의 핵심 원인과 당사자의 필요를 깊이 파악한다.", type: "problem" },
-          { text: "다양한 사람의 의견을 모으고 공통의 방향을 찾는다.", type: "connect" }
+          { text: "문제의 원인과 그 문제를 겪는 사람들의 필요를 먼저 살펴본다.", type: "problem" },
+          { text: "여러 의견을 듣고 모두가 함께할 수 있는 방향을 찾는다.", type: "connect" }
         ]
       },
       {
-        title: "새로운 사업을 시작할 때 더 자신 있는 방식은?",
+        title: "새로운 사업을 시작한다면, 당신은?",
         answers: [
-          { text: "아직 없는 방식과 사업모델을 설계한다.", type: "idea" },
-          { text: "계획을 구체적인 일정과 업무로 바꾸어 실행한다.", type: "execute" }
+          { text: "아직 없는 새로운 방식으로 사업을 만들어본다.", type: "idea" },
+          { text: "구체적인 계획을 세우고 하나씩 실행한다.", type: "execute" }
         ]
       },
       {
-        title: "팀 프로젝트에서 내가 자주 맡는 역할은?",
+        title: "팀 프로젝트에서 나는 보통?",
         answers: [
-          { text: "일정과 과업을 관리하며 결과물을 완성하는 역할", type: "execute" },
-          { text: "사람들의 의견을 조율하고 협업을 이끄는 역할", type: "connect" }
+          { text: "일정을 챙기고 맡은 일을 끝까지 해내는 역할", type: "execute" },
+          { text: "서로 다른 의견을 조율하고 협업을 이끄는 역할", type: "connect" }
         ]
       },
       {
-        title: "프로젝트가 기대만큼 성과를 내지 못했을 때 나는?",
+        title: "😮 열심히 했는데 결과가 아쉽다. 그럴 때 나는?",
         answers: [
-          { text: "데이터와 과정을 검토해 실패 원인을 분석한다.", type: "problem" },
-          { text: "새로운 해결방식이나 대안을 다시 설계한다.", type: "idea" }
+          { text: "“왜 안 됐지?” 성과가 나지 않은 원인을 찾아본다.", type: "problem" },
+          { text: "“다른 방법은 없을까?” 새로운 해결 방법을 생각한다.", type: "idea" }
         ]
       },
       {
-        title: "현장에서 더 보람을 느끼는 순간은?",
+        title: "일할 때, 더 보람을 느끼는 순간은?",
         answers: [
-          { text: "고객이나 참여자에게 서비스를 직접 제공하고 개선할 때", type: "execute" },
-          { text: "좋은 활동을 알리고 더 많은 사람의 참여를 끌어낼 때", type: "connect" }
+          { text: "서비스를 직접 제공하고 더 나은 방향으로 개선할 때", type: "execute" },
+          { text: "좋은 활동을 알리고 더 많은 참여를 이끌어낼 때", type: "connect" }
         ]
       },
       {
-        title: "새로운 지원사업을 맡게 된다면 먼저 하고 싶은 일은?",
+        title: "새로운 지원사업을 맡았다! 가장 먼저 할 일은?",
         answers: [
-          { text: "정책자료와 대상자의 필요를 분석해 문제를 정의한다.", type: "problem" },
-          { text: "운영절차를 만들고 현장 실행계획부터 구체화한다.", type: "execute" }
+          { text: "자료와 관계자의 의견을 살펴보고 어떤 문제가 있는지 파악한다.", type: "problem" },
+          { text: "진행 순서를 정하고 구체적인 실행계획을 세운다.", type: "execute" }
         ]
       },
       {
-        title: "사회문제 해결 조직의 성장을 돕는다면?",
+        title: "🏢 당신이 사회공헌조직의 대표라면,\n조직의 성장을 위해?",
         answers: [
-          { text: "새로운 수익모델과 서비스 확장방안을 함께 구상한다.", type: "idea" },
-          { text: "기업·기관·전문가를 연결해 성장 자원을 확보한다.", type: "connect" }
+          { text: "새로운 방식으로 수익을 만들고 서비스를 넓혀갈 방법을 생각한다.", type: "idea" },
+          { text: "기업·기관·전문가를 연결해 필요한 도움을 얻는다.", type: "connect" }
         ]
       },
       {
-        title: "반복되는 운영상의 문제가 생겼을 때 나는?",
+        title: "같은 문제가 계속 반복된다면?",
         answers: [
-          { text: "업무 절차를 다시 정리하고 실행방식을 개선한다.", type: "execute" },
-          { text: "구성원과 참여자의 소통을 늘려 협력관계를 회복한다.", type: "connect" }
+          { text: "일하는 방식을 다시 정리하고 더 나은 방법을 찾아본다.", type: "execute" },
+          { text: "사람들과 더 많이 소통하며 함께 해결할 방법을 찾아본다.", type: "connect" }
         ]
       },
       {
-        title: "아이디어를 구체화할 때 더 즐거운 과정은?",
+        title: "💡 아이디어를 현실로 옮길 때, 나는?",
         answers: [
-          { text: "인터뷰와 조사를 통해 숨은 필요를 찾아내는 과정", type: "problem" },
-          { text: "해결책을 제품·서비스 형태로 만들어 보는 과정", type: "idea" }
+          { text: "사람들의 이야기를 들어보고 정말 필요한 아이디어인지 확인한다.", type: "problem" },
+          { text: "직접 만들어보며 아이디어를 현실에서 구현해본다.", type: "idea" }
         ]
       },
       {
-        title: "복잡한 협업 상황에서 나는?",
+        title: "🤝 여러 사람의 의견이 엇갈리는 복잡한 상황, 나는?",
         answers: [
-          { text: "쟁점과 원인을 정리해 무엇이 문제인지 명확히 한다.", type: "problem" },
-          { text: "서로 다른 입장을 조율해 함께 움직이도록 만든다.", type: "connect" }
+          { text: "각자의 의견을 살펴보며 문제의 원인을 정리한다.", type: "problem" },
+          { text: "서로 다른 의견을 조율해 함께 해결할 방법을 찾는다.", type: "connect" }
         ]
       },
       {
-        title: "나에게 더 잘 맞는 성장 방식은?",
+        title: "🌱 나에게 더 잘 맞는 성장 방식은?",
         answers: [
-          { text: "새로운 아이디어를 처음부터 기획하고 구조화하는 것", type: "idea" },
-          { text: "실행하면서 문제를 해결하고 결과를 개선하는 것", type: "execute" }
+          { text: "새로운 아이디어를 처음부터 기획하고 구체화하는 것", type: "idea" },
+          { text: "직접 실행하면서 문제를 해결하고 결과를 개선하는 것", type: "execute" }
         ]
       }
     ];
@@ -1389,7 +1495,8 @@
     let answers = [];
     let currentResult = null;
     let countedThisRun = false;
-    let participantInfo = { name: "", phone: "", email: "", newsletter: false };
+    let midCheerShown = false;
+    let participantInfo = { name: "", age: "", phone: "", email: "", newsletter: false };
 
     function showScreen(name) {
       Object.values(screens).forEach(el => el.classList.remove("active"));
@@ -1408,6 +1515,7 @@
     function startTest() {
       participantInfo = {
         name: document.getElementById("info-name-input").value.trim(),
+        age: document.getElementById("info-age-input").value.trim(),
         phone: document.getElementById("info-phone-input").value.trim(),
         email: document.getElementById("info-email-input").value.trim(),
         newsletter: document.getElementById("info-newsletter-checkbox").checked
@@ -1416,6 +1524,7 @@
       answers = [];
       currentResult = null;
       countedThisRun = false;
+      midCheerShown = false;
       renderQuestion();
       showScreen("question");
     }
@@ -1441,7 +1550,43 @@
       });
 
       document.getElementById("back-btn").classList.toggle("hidden", currentIndex === 0);
+
+      if (currentIndex === 7 && !midCheerShown) {
+        midCheerShown = true;
+        showMidCheer();
+      }
     }
+
+    function showMidCheer() {
+      const el = document.getElementById("mid-cheer");
+      if (!el) return;
+      const pool = Object.values(TYPES).filter((t) => t.iconImg);
+      const pick = pool.length ? pool[Math.floor(Math.random() * pool.length)] : null;
+      const iconEl = document.getElementById("mid-cheer-icon");
+      if (pick && iconEl) {
+        iconEl.src = pick.iconImg;
+        iconEl.alt = pick.name || "";
+      }
+      const messages = [
+        "벌써 절반이나 왔어요! 대단해요!",
+        "우와, 벌써 절반 지점이에요! 잘하고 있어요!",
+        "절반 통과! 조금만 더 힘내요!"
+      ];
+      document.getElementById("mid-cheer-text").textContent =
+        messages[Math.floor(Math.random() * messages.length)];
+      el.classList.remove("show");
+      void el.offsetWidth;
+      el.classList.add("show");
+      clearTimeout(showMidCheer._timer);
+      showMidCheer._timer = setTimeout(() => {
+        el.classList.remove("show");
+      }, 2000);
+    }
+
+    document.getElementById("mid-cheer").addEventListener("click", () => {
+      clearTimeout(showMidCheer._timer);
+      document.getElementById("mid-cheer").classList.remove("show");
+    });
 
     function selectAnswer(type) {
       answers[currentIndex] = type;
@@ -1553,7 +1698,7 @@
       document.getElementById("action-text").textContent = t.action;
 
       const casesBtn = document.getElementById("cases-btn");
-      if (casesBtn) casesBtn.textContent = `${t.name}의 주요 활동 보기`;
+      if (casesBtn) casesBtn.textContent = `${t.name}의\n주요 활동 보기`;
 
       const list = document.getElementById("activity-list");
       list.innerHTML = "";
@@ -1588,6 +1733,51 @@
       if (commentBtn) { commentBtn.disabled = false; commentBtn.textContent = "남기기"; }
     }
 
+    // 구글 앱스 스크립트에 1회 요청을 보내고 결과를 파싱한다.
+    async function postToScriptOnce_(payload) {
+      const res = await fetch(CONFIG.emailEndpoint, {
+        method: "POST",
+        headers: { "Content-Type": "text/plain;charset=utf-8" },
+        body: JSON.stringify(payload)
+      });
+      const rawText = await res.text();
+      let data = null;
+      try { data = JSON.parse(rawText); } catch (parseErr) { data = null; }
+      return { res, data, rawText };
+    }
+
+    // 콜드 스타트 등 일시적인 실패에 대비해, 실패 시 잠시 대기 후 한 번 더 시도한다.
+    async function postToScriptWithRetry_(payload, retries) {
+      if (retries === undefined) retries = 1;
+      let last = null;
+      for (let attempt = 0; attempt <= retries; attempt++) {
+        try {
+          last = await postToScriptOnce_(payload);
+          if (last.res.ok && last.data && last.data.status === "ok") {
+            return last;
+          }
+        } catch (networkErr) {
+          last = { res: null, data: null, rawText: "", networkErr };
+        }
+        if (attempt < retries) {
+          await new Promise((resolve) => setTimeout(resolve, 1200));
+        }
+      }
+      return last;
+    }
+
+    function describeBadResponse_(result) {
+      if (result && result.networkErr) {
+        return "bad_response [네트워크: " + (result.networkErr.message || String(result.networkErr)) + "]";
+      }
+      const data = result && result.data;
+      const serverMsg = data && data.message ? (" [서버: " + data.message + "]") : "";
+      const rawSnippet = (!data && result && result.res)
+        ? (" [응답: HTTP " + result.res.status + " / " + (result.rawText || "").slice(0, 120).replace(/\s+/g, " ") + "]")
+        : "";
+      return "bad_response" + serverMsg + rawSnippet;
+    }
+
     async function submitComment() {
       const status = document.getElementById("comment-status");
       const btn = document.getElementById("comment-send-btn");
@@ -1609,30 +1799,29 @@
       status.className = "email-status";
 
       try {
-        const res = await fetch(CONFIG.emailEndpoint, {
-          method: "POST",
-          headers: { "Content-Type": "text/plain;charset=utf-8" },
-          body: JSON.stringify({
-            action: "comment",
-            name: participantInfo.name,
-            email: participantInfo.email,
-            resultKey: currentResult,
-            resultName: t.name,
-            comment,
-            submittedAt: new Date().toISOString()
-          })
+        const result = await postToScriptWithRetry_({
+          action: "comment",
+          name: participantInfo.name,
+          age: participantInfo.age,
+          phone: participantInfo.phone,
+          email: participantInfo.email,
+          newsletter: participantInfo.newsletter,
+          consent: true,
+          resultKey: currentResult,
+          resultName: t.name,
+          comment,
+          submittedAt: new Date().toISOString()
         });
-        const data = await res.json().catch(() => null);
-        if (res.ok && data && data.status === "ok") {
+        if (result.res && result.res.ok && result.data && result.data.status === "ok") {
           status.textContent = "소중한 한 줄 남겨주셔서 감사해요 💌";
           status.className = "email-status ok";
           btn.textContent = "전송 완료";
           commentInput.disabled = true;
         } else {
-          throw new Error("bad_response");
+          throw new Error(describeBadResponse_(result));
         }
       } catch (err) {
-        status.textContent = "전송에 실패했어요. 잠시 후 다시 시도해 주세요.";
+        status.textContent = "전송에 실패했어요. 잠시 후 다시 시도해 주세요. [디버그: " + (err && err.message ? err.message : String(err)) + "]";
         status.className = "email-status err";
         btn.disabled = false;
         btn.textContent = "남기기";
@@ -1645,6 +1834,11 @@
 
     function isValidPhone(value) {
       return /^[0-9\-+ ]{9,14}$/.test(value);
+    }
+
+    function isValidAge(value) {
+      const n = Number(value);
+      return value.length > 0 && Number.isFinite(n) && n >= 1 && n <= 120;
     }
 
     function formatPhoneNumber(value) {
@@ -1665,17 +1859,18 @@
 
     function updateInfoButtonState() {
       const name = document.getElementById("info-name-input").value.trim();
+      const age = document.getElementById("info-age-input").value.trim();
       const phone = document.getElementById("info-phone-input").value.trim();
       const email = document.getElementById("info-email-input").value.trim();
       const agreed = document.getElementById("info-consent-checkbox").checked;
       document.getElementById("info-next-btn").disabled =
-        !(name.length > 0 && isValidPhone(phone) && isValidEmail(email) && agreed);
+        !(name.length > 0 && isValidAge(age) && isValidPhone(phone) && isValidEmail(email) && agreed);
     }
 
     async function sendResultEmail() {
       const status = document.getElementById("email-status");
       const sendBtn = document.getElementById("send-email-btn");
-      const { name, phone, email, newsletter } = participantInfo;
+      const { name, age, phone, email, newsletter } = participantInfo;
 
       if (!name || !isValidEmail(email) || !currentResult) return;
 
@@ -1704,31 +1899,26 @@
 
         sendBtn.textContent = "전송 중...";
 
-        const res = await fetch(CONFIG.emailEndpoint, {
-          method: "POST",
-          headers: { "Content-Type": "text/plain;charset=utf-8" },
-          body: JSON.stringify({
-            name,
-            phone,
-            email,
-            newsletter,
-            resultKey: currentResult,
-            resultName: t.name,
-            resultDesc: t.desc,
-            resultAction: t.action,
-            consent: true,
-            submittedAt: new Date().toISOString(),
-            imageBase64
-          })
+        const result = await postToScriptWithRetry_({
+          name,
+          age,
+          phone,
+          email,
+          newsletter,
+          resultKey: currentResult,
+          resultName: t.name,
+          resultDesc: t.desc,
+          resultAction: t.action,
+          consent: true,
+          submittedAt: new Date().toISOString(),
+          imageBase64
         });
-        const data = await res.json().catch(() => null);
-        if (res.ok && data && data.status === "ok") {
+        if (result.res && result.res.ok && result.data && result.data.status === "ok") {
           status.textContent = "결과를 이메일로 보내드렸어요. 잠시 후 도착합니다." + imageDebugNote;
           status.className = "email-status " + (imageDebugNote ? "err" : "ok");
           sendBtn.textContent = "전송 완료";
         } else {
-          const serverMsg = data && data.message ? (" [서버: " + data.message + "]") : "";
-          throw new Error("bad_response" + serverMsg);
+          throw new Error(describeBadResponse_(result));
         }
       } catch (err) {
         status.textContent = "전송에 실패했어요. 잠시 후 다시 시도해 주세요. [디버그: " + (err && err.message ? err.message : String(err)) + "]";
@@ -1744,6 +1934,7 @@
       answers = [];
       currentResult = null;
       countedThisRun = false;
+      midCheerShown = false;
     }
 
     function openModal(id) {
@@ -1757,14 +1948,19 @@
     function openCases() {
       if (!currentResult) return;
       const t = TYPES[currentResult];
-      document.getElementById("cases-title").textContent = `${t.name}의 주요 활동`;
+      document.getElementById("cases-title").textContent = `${t.name}의 주요 활동 (함께일하는재단 사업)`;
       const grid = document.getElementById("case-grid");
       grid.innerHTML = "";
-      t.cases.forEach(([title, desc]) => {
-        const div = document.createElement("div");
-        div.className = "case-card";
-        div.innerHTML = `<strong>${title}</strong><p>${desc}</p>`;
-        grid.appendChild(div);
+      t.cases.forEach(([title, desc, url]) => {
+        const card = document.createElement(url ? "a" : "div");
+        card.className = "case-card";
+        if (url) {
+          card.href = url;
+          card.target = "_blank";
+          card.rel = "noopener noreferrer";
+        }
+        card.innerHTML = `<strong>${title}</strong><p>${desc}</p>`;
+        grid.appendChild(card);
       });
       openModal("cases-modal");
     }
@@ -2024,7 +2220,7 @@
         const actionBoxY0 = panelY0 + panelH0 + 44;
         const actionBoxBottom0 = actionBoxY0 + 150;
         const footerY0 = actionBoxBottom0 + 74;
-        const H = Math.max(1350, footerY0 + 40);
+        const H = Math.max(1350, footerY0 + 70);
 
         const canvas = document.createElement("canvas");
         canvas.width = W;
@@ -2238,6 +2434,7 @@
       document.getElementById("info-consent-details").classList.toggle("open");
     });
     document.getElementById("info-name-input").addEventListener("input", updateInfoButtonState);
+    document.getElementById("info-age-input").addEventListener("input", updateInfoButtonState);
     document.getElementById("info-phone-input").addEventListener("input", (e) => {
       const cursorAtEnd = e.target.selectionEnd === e.target.value.length;
       e.target.value = formatPhoneNumber(e.target.value);
@@ -2245,6 +2442,12 @@
         e.target.setSelectionRange(e.target.value.length, e.target.value.length);
       }
       updateInfoButtonState();
+    });
+    document.getElementById("info-phone-input").addEventListener("focus", (e) => {
+      const val = e.target.value;
+      if (val === "010-") {
+        e.target.setSelectionRange(val.length, val.length);
+      }
     });
     document.getElementById("info-email-input").addEventListener("input", updateInfoButtonState);
     document.getElementById("info-consent-checkbox").addEventListener("change", updateInfoButtonState);
