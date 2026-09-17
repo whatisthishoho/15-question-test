@@ -873,11 +873,16 @@
       gap: 12px;
     }
     .case-card {
+      display: block;
       border: 1px solid var(--line);
       border-radius: 18px;
       padding: 18px;
       background: #FBFDFD;
+      text-decoration: none;
+      color: inherit;
     }
+    a.case-card { cursor: pointer; transition: border-color .15s, transform .15s; }
+    a.case-card:hover { border-color: var(--accent, #999); transform: translateY(-1px); }
     .case-card strong {
       display: block;
       color: var(--navy);
@@ -1203,8 +1208,7 @@
   <div id="cases-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="cases-title">
     <div class="modal-card">
       <button class="modal-close" data-close="cases-modal" aria-label="닫기">×</button>
-      <h2 id="cases-title">주요 활동</h2>
-      <p class="sub">이 유형이 실제로 이런 일을 해요. (예시이며, 실제 재단 지원기업 사례로 교체하여 사용할 수 있습니다.)</p>
+      <h2 id="cases-title">주요 활동 (함께일하는재단 사업)</h2>
       <div id="case-grid" class="case-grid"></div>
     </div>
   </div>
@@ -1252,9 +1256,9 @@
         activities: ["사회문제 조사와 분석", "사용자 인터뷰", "정책 및 사업기획", "사회성과 측정", "리서치와 서비스 기획"],
         action: "관심 있는 사회문제의 당사자 이야기를 한 가지 찾아보세요.",
         cases: [
-          ["고립·은둔 청년 지원", "당사자 인터뷰와 생활환경 분석을 바탕으로 맞춤형 회복 프로그램을 설계합니다."],
-          ["지역문제 데이터 연구", "인구·일자리·생활 데이터를 분석해 지역에 필요한 서비스와 정책을 제안합니다."],
-          ["장애 접근성 개선", "사용자의 실제 이동과 이용 경험을 조사해 제품과 공간의 접근성을 높입니다."]
+          ["STP 해외 빈곤 가정 지원사업", "개발도상국 사회적기업과 협력해 빈곤 아동·가정의 자립을 지원하는 해외 사업입니다.", "https://hamkke.org/archives/29061"],
+          ["삼성 희망디딤돌2.0", "자립준비청년의 취업과 경제적 자립, 멘토링을 지원하는 사업입니다.", "https://hamkke.org/archives/business/50988"],
+          ["공항 포티케어 서비스", "공항을 이용하는 교통약자를 위한 이동 지원 서비스를 운영하는 사업입니다.", "https://hamkke.org/archives/27353"]
         ]
       },
       idea: {
@@ -1271,9 +1275,9 @@
         activities: ["소셜벤처 창업", "사업모델 기획", "제품·서비스 개발", "창업 프로그램 참여", "사업개발"],
         action: "해결하고 싶은 문제와 해결방법을 한 문장으로 작성해 보세요.",
         cases: [
-          ["업사이클링 제품 개발", "버려지는 자원을 새로운 제품으로 전환하고 환경문제와 시장기회를 함께 해결합니다."],
-          ["돌봄 연결 플랫폼", "돌봄이 필요한 사람과 적합한 서비스를 연결하는 디지털 사업모델을 설계합니다."],
-          ["로컬푸드 브랜드", "지역 생산자의 판로 문제를 소비자 친화적인 제품과 브랜드로 해결합니다."]
+          ["D'velop(자립준비청년 디지털 진로지원 사업)", "자립준비청년의 디지털 역량을 키워 진로와 취업을 연계하는 사업입니다.", "https://flagup.kr/page/digital.php"],
+          ["현대오토에버와 함께하는 고교생 IT 꿈나무 성장지원 사업", "특성화고 학생들의 정보보안 등 IT 역량을 키워주는 교육 지원 사업입니다.", "https://autoeveritdream.com/"],
+          ["이주민 AI 데이터플래닛", "이주민을 AI 데이터 라벨링 전문인력으로 양성해 일자리로 연결하는 사업입니다.", "https://hamkke.org/archives/business/49372"]
         ]
       },
       execute: {
@@ -1290,9 +1294,9 @@
         activities: ["사회적기업·소셜벤처 취업", "프로젝트 운영", "서비스 운영", "마케팅과 영업", "고객 및 현장관리"],
         action: "관심 분야의 소셜벤처에서 어떤 직무를 채용하는지 찾아보세요.",
         cases: [
-          ["취약계층 일자리 사업", "교육·생산·판매 현장을 운영하며 안정적인 일자리와 사업성과를 함께 만듭니다."],
-          ["잉여식품 나눔 서비스", "식품 수거, 보관, 전달 과정을 관리해 낭비를 줄이고 필요한 곳에 연결합니다."],
-          ["교육 서비스 운영", "학습자 모집부터 수업 운영, 만족도 확인과 개선까지 현장을 책임집니다."]
+          ["GKL 로컬 관광기업 육성·지원사업", "지역 관광기업을 발굴해 성장 자금과 컨설팅을 지원하는 사업입니다.", "https://hamkke.org/archives/business/50117"],
+          ["MG희망나눔 사회연대경제조직 육성지원 사업", "지역 사회연대경제조직을 선정해 성장지원금과 컨설팅을 제공하는 사업입니다.", "https://hamkke.org/archives/business/52580"],
+          ["모두의 공모(소규모 기관·단체 역량강화를 위한 인큐베이팅형 공모사업)", "소규모 복지기관·단체의 역량강화를 위해 자금과 교육을 지원하는 사업입니다.", "https://hamkke.org/archives/business/51003"]
         ]
       },
       connect: {
@@ -1309,9 +1313,9 @@
         activities: ["파트너십과 대외협력", "커뮤니티 운영", "홍보와 콘텐츠 제작", "기업 사회공헌과 ESG", "창업지원과 임팩트 투자"],
         action: "관심 있는 사회문제와 관련된 기관이나 커뮤니티 하나를 찾아보세요.",
         cases: [
-          ["기업 ESG 협력", "기업의 자원과 사회문제 해결 조직을 연결해 공동 프로젝트를 만듭니다."],
-          ["청년 커뮤니티 운영", "공통 관심사를 가진 청년들이 경험과 정보를 나누고 협업하도록 돕습니다."],
-          ["임팩트 창업 지원", "창업가, 멘토, 투자자와 지원기관을 연결해 소셜벤처의 성장을 지원합니다."]
+          ["우리동네 MG갤러리", "전국 지역에 갤러리 공간을 열어 지역 예술가와 주민을 연결하는 사업입니다.", "https://mggallery.kr/about-us/"],
+          ["카카오페이 소상공인 판로지원사업", "소상공인의 판로 확대를 위해 팝업스토어와 디지털 지원을 제공하는 사업입니다.", "https://kakaopaytogether.com/shopinfo/story.html"],
+          ["하나 파워 온", "사회적기업과 소상공인의 성장을 지원하는 상생 프로젝트입니다.", "https://www.hanapoweron.com/"]
         ]
       }
     };
@@ -1942,14 +1946,19 @@
     function openCases() {
       if (!currentResult) return;
       const t = TYPES[currentResult];
-      document.getElementById("cases-title").textContent = `${t.name}의 주요 활동`;
+      document.getElementById("cases-title").textContent = `${t.name}의 주요 활동 (함께일하는재단 사업)`;
       const grid = document.getElementById("case-grid");
       grid.innerHTML = "";
-      t.cases.forEach(([title, desc]) => {
-        const div = document.createElement("div");
-        div.className = "case-card";
-        div.innerHTML = `<strong>${title}</strong><p>${desc}</p>`;
-        grid.appendChild(div);
+      t.cases.forEach(([title, desc, url]) => {
+        const card = document.createElement(url ? "a" : "div");
+        card.className = "case-card";
+        if (url) {
+          card.href = url;
+          card.target = "_blank";
+          card.rel = "noopener noreferrer";
+        }
+        card.innerHTML = `<strong>${title}</strong><p>${desc}</p>`;
+        grid.appendChild(card);
       });
       openModal("cases-modal");
     }
