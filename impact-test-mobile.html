@@ -866,6 +866,13 @@
       margin-bottom: 8px;
       padding-right: 44px;
     }
+    .cases-title-sub {
+      display: inline-block;
+      margin-top: 4px;
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--muted);
+    }
     .modal .sub {
       color: var(--muted);
       line-height: 1.6;
@@ -1357,7 +1364,7 @@
   <div id="cases-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="cases-title">
     <div class="modal-card">
       <button class="modal-close" data-close="cases-modal" aria-label="닫기">×</button>
-      <h2 id="cases-title">주요 활동 (함께일하는재단 사업)</h2>
+      <h2 id="cases-title">주요 활동<br /><span class="cases-title-sub">(함께일하는재단 사업)</span></h2>
       <div id="case-grid" class="case-grid"></div>
     </div>
   </div>
@@ -2095,7 +2102,7 @@
     function openCases() {
       if (!currentResult) return;
       const t = TYPES[currentResult];
-      document.getElementById("cases-title").textContent = `${t.name}의 주요 활동 (함께일하는재단 사업)`;
+      document.getElementById("cases-title").innerHTML = `${t.name}의 주요 활동<br /><span class="cases-title-sub">(함께일하는재단 사업)</span>`;
       const grid = document.getElementById("case-grid");
       grid.innerHTML = "";
       t.cases.forEach(([title, desc, url]) => {
@@ -2577,6 +2584,37 @@
     bindTap(document.getElementById("cases-btn"), openCases);
     bindTap(document.getElementById("send-email-btn"), sendResultEmail);
     bindTap(document.getElementById("comment-send-btn"), submitComment);
+
+    /* Enter 입력 시 다음 칸으로 자동 이동 (모바일 키보드의 "다음"/"완료" 버튼 대응) */
+    const infoFieldOrder = ["info-name-input", "info-age-input", "info-phone-input", "info-email-input"];
+    infoFieldOrder.forEach((id, idx) => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.addEventListener("keydown", (e) => {
+        if (e.key !== "Enter") return;
+        e.preventDefault();
+        const nextId = infoFieldOrder[idx + 1];
+        if (nextId) {
+          const nextEl = document.getElementById(nextId);
+          if (nextEl) nextEl.focus();
+        } else {
+          el.blur();
+          const nextBtn = document.getElementById("info-next-btn");
+          if (nextBtn && !nextBtn.disabled) nextBtn.click();
+        }
+      });
+    });
+    const commentInputEl = document.getElementById("comment-input");
+    if (commentInputEl) {
+      commentInputEl.addEventListener("keydown", (e) => {
+        if (e.key !== "Enter") return;
+        e.preventDefault();
+        commentInputEl.blur();
+        const sendBtn = document.getElementById("comment-send-btn");
+        if (sendBtn && !sendBtn.disabled) sendBtn.click();
+      });
+    }
+
     bindTap(document.getElementById("info-consent-toggle-btn"), () => {
       document.getElementById("info-consent-details").classList.toggle("open");
     });
